@@ -18,11 +18,12 @@ function registerListener(app) {
       }
     }
 
-    const threadTs = message.thread_ts || message.ts;
+    const isDM = message.channel_type === "im";
 
     await say({
       text: lines.join("\n"),
-      thread_ts: threadTs,
+      // In DMs, reply inline (no threading). In channels, reply in-thread.
+      ...(isDM ? {} : { thread_ts: message.thread_ts || message.ts }),
       unfurl_links: true,
     });
   });
