@@ -1,0 +1,15 @@
+{
+  "name": "slayer-bot",
+  "version": "1.0.0",
+  "description": "Slay the Spire 2 Slack Bot — look up cards with [[Card Name]] syntax",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "scrape": "node scripts/scrape-slugs.js"
+  },
+  "dependencies": {
+    "@slack/bolt": "^4.1.0",
+    "cheerio": "^1.0.0",
+    "fastest-levenshtein": "^1.0.16"
+  }
+}
