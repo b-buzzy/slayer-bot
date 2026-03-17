@@ -23,6 +23,19 @@ async function fetchPage(url) {
   return res.text();
 }
 
+/**
+ * Clean up description text by removing formatting tags
+ */
+function cleanDescription(text) {
+  if (!text) return "";
+  return text
+    .replace(/\[gold\]/g, "")
+    .replace(/\[\/gold\]/g, "")
+    .replace(/\[green\]/g, "")
+    .replace(/\[\/green\]/g, "")
+    .replace(/\[.*?\]/g, ""); // Remove any other bracket tags
+}
+
 function parseCardPage(html, slug) {
   const $ = cheerio.load(html);
 
@@ -34,20 +47,17 @@ function parseCardPage(html, slug) {
     rarity: "",
     energyCost: "",
     description: "",
+    descriptionUpgraded: "",
   };
 
-  // Extract from JSON-LD structured data (most reliable source)
+  // Extract from JSON-LD structured data for basic info
   $('script[type="application/ld+json"]').each((_, el) => {
     try {
       const data = JSON.parse($(el).html());
       if (data["@type"] === "GameItem") {
         if (data.name) card.name = data.name;
         if (data.description) {
-          // Clean up the description - remove [gold] and other bracket tags
-          card.description = data.description
-            .replace(/\[gold\]/g, "")
-            .replace(/\[\/gold\]/g, "")
-            .replace(/\[.*?\]/g, "");
+          card.description = cleanDescription(data.description);
         }
         if (data.category) card.cardType = data.category;
       }
@@ -55,6 +65,23 @@ function parseCardPage(html, slug) {
       // Ignore JSON parse errors
     }
   });
+
+  // Extract descriptionUpgraded from Next.js hydration data
+  // The data is in script tags with escaped JSON: \\\"key\\\":\\\"value\\\"
+  const pageHtml = $.html();
+  
+  // Match the escaped pattern: \\\"descriptionUpgraded\\\":\\\"...\\\"
+  // The regex captures content between escaped quotes, handling escaped chars within
+  const descUpgradedMatch = pageHtml.match(/\\"descriptionUpgraded\\":\\"([^\\]*(?:\\.[^\\]*)*?)\\"/);
+  
+  if (descUpgradedMatch) {
+    // The matched text has double-escaped chars: \\n for newline
+    // First unescape the backslashes, then clean the description
+    const unescaped = descUpgradedMatch[1]
+      .replace(/\\\\n/g, "\n")  // \\n -> newline
+      .replace(/\\n/g, "\n");   // \n -> newline (fallback)
+    card.descriptionUpgraded = cleanDescription(unescaped);
+  }
 
   // Fallback: get card name from h1
   if (!card.name) {
@@ -66,11 +93,10 @@ function parseCardPage(html, slug) {
   const bodyText = $("body").text();
 
   // Extract details from the page text
-  // Pattern: "DetailsRarityBasicEnergy Cost2Card TypeAttackCharacterIronclad"
-  const rarityMatch = bodyText.match(/Rarity\s*(Basic|Common|Uncommon|Rare|Special|Starter)/i);
+  const rarityMatch = bodyText.match(/Rarity\s*(Basic|Common|Uncommon|Rare|Special|Starter|Ancient|Curse|Event|Token)/i);
   const energyMatch = bodyText.match(/Energy Cost\s*(\d+|X)/i);
   const typeMatch = bodyText.match(/Card Type\s*(Attack|Skill|Power|Status|Curse)/i);
-  const characterMatch = bodyText.match(/Character\s*(Ironclad|Silent|Defect|Watcher|Necrobinder|The Regent|Colorless)/i);
+  const characterMatch = bodyText.match(/Character\s*(Ironclad|Silent|Defect|Watcher|Necrobinder|The Regent|Colorless|Event|Status|Curse|Token|Quest)/i);
 
   if (rarityMatch) card.rarity = rarityMatch[1];
   if (energyMatch) card.energyCost = energyMatch[1];
