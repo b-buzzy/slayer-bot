@@ -45,13 +45,19 @@ For local runs, create a `.env` file with the variables above and run `npm start
 
 ## Updating Card Data
 
-Card data is stored in `data/slugs.json`. To refresh it after a game patch:
+Card slug data is stored in `data/slugs.json`. To refresh it after a game patch:
 
 ```bash
 npm run scrape
 ```
 
 This scrapes [slaythespire2.gg/cards](https://slaythespire2.gg/cards) and regenerates the slug mapping.
+
+Card data is stored in `data/cards.json`. To refresh it after a game patch:
+
+```bash
+npm run scrape:cards
+```
 
 ## Project Structure
 
