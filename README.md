@@ -6,7 +6,7 @@ A Slack bot for looking up [Slay the Spire 2](https://www.megacrit.com/) cards. 
 
 - **Bracket syntax** — mention cards with `[[Defend]]`, `[[Eruption]]`, etc.
 - **Fuzzy matching** — handles typos and partial names using Levenshtein distance
-- **Multiple cards** — `[[Defend]] and [[Strike]]` in one message returns both
+- **Multiple cards** — `[[Defend]] and `[[Strike]]` in one message returns both
 - **Threaded replies** — responds in-thread in channels, inline in DMs
 - **Rich previews** — Slack unfurls the slaythespire2.gg links automatically
 
@@ -43,33 +43,49 @@ npm install
 
 For local runs, create a `.env` file with the variables above and run `npm start`.
 
-## Updating Card Data
+## Updating Game Data
 
-Card slug data is stored in `data/slugs.json`. To refresh it after a game patch:
-
-```bash
-npm run scrape
-```
-
-This scrapes [slaythespire2.gg/cards](https://slaythespire2.gg/cards) and regenerates the slug mapping.
-
-Card data is stored in `data/cards.json`. To refresh it after a game patch:
+Game data is stored in the `data/` directory. To refresh all data after a game patch:
 
 ```bash
-npm run scrape:cards
+npm run scrape:all
 ```
+
+Or run individual scrapers:
+
+| Command | Description |
+|---------|-------------|
+| `npm run scrape:cards` | Scrape card data from slaythespire2.gg/cards |
+| `npm run scrape:enchantments` | Scrape enchantment data |
+| `npm run scrape:enemies` | Scrape enemy data |
+| `npm run scrape:events` | Scrape event data |
+| `npm run scrape:potions` | Scrape potion data |
+| `npm run scrape:relics` | Scrape relic data |
+| `npm run scrape:slugs` | Scrape URL slug mappings |
 
 ## Project Structure
 
 ```
 src/
-  index.js       # App entry point, Bolt + Socket Mode setup
-  listener.js    # Message handler, [[bracket]] regex detection
-  lookup.js      # Card name → URL resolution with fuzzy matching
+  index.js           # App entry point, Bolt + Socket Mode setup
+  listener.js        # Message handler, [[bracket]] regex detection
+  lookup.js          # Card name → URL resolution with fuzzy matching
 data/
-  slugs.json     # Card name → URL slug mapping (~299 cards)
+  cards.json         # Card data
+  enchantments.json  # Enchantment data
+  enemies.json       # Enemy data
+  events.json        # Event data
+  potions.json       # Potion data
+  relics.json        # Relic data
+  slugs.json         # Card name → URL slug mapping
 scripts/
-  scrape-slugs.js  # Scraper to regenerate slugs.json
+  scrape-cards.js        # Scraper for cards
+  scrape-enchantments.js # Scraper for enchantments
+  scrape-enemies.js      # Scraper for enemies
+  scrape-events.js       # Scraper for events
+  scrape-potions.js      # Scraper for potions
+  scrape-relics.js       # Scraper for relics
+  scrape-slugs.js        # Scraper for URL slugs
 ```
 
 ## Tech Stack

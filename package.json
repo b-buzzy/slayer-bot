@@ -6,7 +6,14 @@
   "scripts": {
     "start": "node src/index.js",
     "scrape": "node scripts/scrape-slugs.js",
-    "scrape:cards": "node scripts/scrape-cards.js"
+    "scrape:all": "npm run scrape:cards && npm run scrape:enchantments && npm run scrape:enemies && npm run scrape:events && npm run scrape:potions && npm run scrape:relics && npm run scrape:slugs",
+    "scrape:cards": "node scripts/scrape-cards.js",
+    "scrape:enchantments": "node scripts/scrape-enchantments.js",
+    "scrape:enemies": "node scripts/scrape-enemies.js",
+    "scrape:events": "node scripts/scrape-events.js",
+    "scrape:potions": "node scripts/scrape-potions.js",
+    "scrape:relics": "node scripts/scrape-relics.js",
+    "scrape:slugs": "node scripts/scrape-slugs.js"
   },
   "dependencies": {
     "@slack/bolt": "^4.1.0",
