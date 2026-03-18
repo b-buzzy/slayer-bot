@@ -1,0 +1,450 @@
+{
+  "ashwater": {
+    "slug": "ashwater",
+    "name": "Ashwater",
+    "description": "Exhaust any number of cards in your Hand.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "attack potion": {
+    "slug": "attack-potion",
+    "name": "Attack Potion",
+    "description": "Choose 1 of 3 random Attack cards to add into your Hand. It's free to play this turn.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "beetle juice": {
+    "slug": "beetle-juice",
+    "name": "Beetle Juice",
+    "description": "Enemy's attacks deal 30% less damage for the next 4 turns.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "blessing of the forge": {
+    "slug": "blessing-of-the-forge",
+    "name": "Blessing of the Forge",
+    "description": "Upgrade all cards in your Hand for the rest of combat.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "block potion": {
+    "slug": "block-potion",
+    "name": "Block Potion",
+    "description": "Gain 12 Block.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "blood potion": {
+    "slug": "blood-potion",
+    "name": "Blood Potion",
+    "description": "Heal for 20% of your Max HP.",
+    "rarity": "Common",
+    "usage": "AnyTime"
+  },
+  "bone brew": {
+    "slug": "bone-brew",
+    "name": "Bone Brew",
+    "description": "Summon 15.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "bottled potential": {
+    "slug": "bottled-potential",
+    "name": "Bottled Potential",
+    "description": "Shuffle ALL your cards into your Draw Pile. Draw 5 cards.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "clarity extract": {
+    "slug": "clarity",
+    "name": "Clarity Extract",
+    "description": "Draw 1 card. At the start of your next 3 turns, draw 1 additional card.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "colorless potion": {
+    "slug": "colorless-potion",
+    "name": "Colorless Potion",
+    "description": "Choose 1 of 3 random Colorless cards to add into your Hand. It's free to play this turn.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "cosmic concoction": {
+    "slug": "cosmic-concoction",
+    "name": "Cosmic Concoction",
+    "description": "Add 3 Upgraded Colorless cards into your Hand.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "cunning potion": {
+    "slug": "cunning-potion",
+    "name": "Cunning Potion",
+    "description": "Add 3 Upgraded Shivs into your Hand.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "cure all": {
+    "slug": "cure-all",
+    "name": "Cure All",
+    "description": "Gain . Draw 2 cards.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "deprecated potion": {
+    "slug": "deprecated-potion",
+    "name": "Deprecated Potion",
+    "description": "This potion has been removed from the game.",
+    "rarity": "None",
+    "usage": "CombatOnly"
+  },
+  "dexterity potion": {
+    "slug": "dexterity-potion",
+    "name": "Dexterity Potion",
+    "description": "Gain 2 Dexterity.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "distilled chaos": {
+    "slug": "distilled-chaos",
+    "name": "Distilled Chaos",
+    "description": "Play the top 3 cards of your Draw Pile.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "droplet of precognition": {
+    "slug": "droplet-of-precognition",
+    "name": "Droplet of Precognition",
+    "description": "Choose a card in your Draw Pile and add it into your Hand.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "duplicator": {
+    "slug": "duplicator",
+    "name": "Duplicator",
+    "description": "This turn, your next card is played an extra time.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "energy potion": {
+    "slug": "energy-potion",
+    "name": "Energy Potion",
+    "description": "Gain .",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "entropic brew": {
+    "slug": "entropic-brew",
+    "name": "Entropic Brew",
+    "description": "Fill all your empty potion slots with random potions.",
+    "rarity": "Rare",
+    "usage": "AnyTime"
+  },
+  "essence of darkness": {
+    "slug": "essence-of-darkness",
+    "name": "Essence of Darkness",
+    "description": "Channel a Dark for each of your Orb Slots.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "explosive ampoule": {
+    "slug": "explosive-ampoule",
+    "name": "Explosive Ampoule",
+    "description": "Deal 10 damage to ALL enemies.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "fairy in a bottle": {
+    "slug": "fairy-in-a-bottle",
+    "name": "Fairy in a Bottle",
+    "description": "When you would die, instead this potion is discarded and you heal to 30% of your Max HP.",
+    "rarity": "Rare",
+    "usage": "Automatic"
+  },
+  "fire potion": {
+    "slug": "fire-potion",
+    "name": "Fire Potion",
+    "description": "Deal 20 damage.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "flex potion": {
+    "slug": "flex-potion",
+    "name": "Flex Potion",
+    "description": "Gain 5 Strength. At the end of your turn, lose 5 Strength.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "focus potion": {
+    "slug": "focus-potion",
+    "name": "Focus Potion",
+    "description": "Gain 2 Focus.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "fortifier": {
+    "slug": "fortifier",
+    "name": "Fortifier",
+    "description": "Triple your Block.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "foul potion": {
+    "slug": "foul-potion",
+    "name": "Foul Potion",
+    "description": "Deal 12 damage to EVERYONE. Can be thrown at the Merchant for {Gold} Gold instead.",
+    "rarity": "Event",
+    "usage": "AnyTime"
+  },
+  "fruit juice": {
+    "slug": "fruit-juice",
+    "name": "Fruit Juice",
+    "description": "Gain 5 Max HP.",
+    "rarity": "Rare",
+    "usage": "AnyTime"
+  },
+  "fysh oil": {
+    "slug": "fysh-oil",
+    "name": "Fysh Oil",
+    "description": "Gain 1 Strength and 1 Dexterity.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "gambler's brew": {
+    "slug": "gamblers-brew",
+    "name": "Gambler's Brew",
+    "description": "Discard any number of cards, then draw that many.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "ghost in a jar": {
+    "slug": "ghost-in-a-jar",
+    "name": "Ghost in a Jar",
+    "description": "Gain 1 Intangible.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "gigantification potion": {
+    "slug": "gigantification-potion",
+    "name": "Gigantification Potion",
+    "description": "The next Attack you play deals triple damage.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "glowwater potion": {
+    "slug": "glowwater-potion",
+    "name": "Glowwater Potion",
+    "description": "Exhaust your Hand. Draw 10 cards.",
+    "rarity": "Event",
+    "usage": "CombatOnly"
+  },
+  "heart of iron": {
+    "slug": "heart-of-iron",
+    "name": "Heart of Iron",
+    "description": "Gain 7 Plating.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "king's courage": {
+    "slug": "kings-courage",
+    "name": "King's Courage",
+    "description": "Forge {Forge}.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "liquid bronze": {
+    "slug": "liquid-bronze",
+    "name": "Liquid Bronze",
+    "description": "Gain 3 Thorns.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "liquid memories": {
+    "slug": "liquid-memories",
+    "name": "Liquid Memories",
+    "description": "Put a card from your Discard Pile into your Hand. It costs 0  this turn.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "lucky tonic": {
+    "slug": "lucky-tonic",
+    "name": "Lucky Tonic",
+    "description": "Gain 1 Buffer.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "mazaleth's gift": {
+    "slug": "mazaleths-gift",
+    "name": "Mazaleth's Gift",
+    "description": "Gain 1 Ritual.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "orobic acid": {
+    "slug": "orobic-acid",
+    "name": "Orobic Acid",
+    "description": "Add a random Attack, Skill, and Power into your Hand. They're free to play this turn.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "poison potion": {
+    "slug": "poison-potion",
+    "name": "Poison Potion",
+    "description": "Apply 6 Poison.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "pot of ghouls": {
+    "slug": "pot-of-ghouls",
+    "name": "Pot of Ghouls",
+    "description": "Add 2 Souls into your Hand.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "potion of binding": {
+    "slug": "potion-of-binding",
+    "name": "Potion of Binding",
+    "description": "Apply 1 Weak and 1 Vulnerable to ALL enemies.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "potion of capacity": {
+    "slug": "potion-of-capacity",
+    "name": "Potion of Capacity",
+    "description": "Gain 2 Orb Slots.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "potion of doom": {
+    "slug": "potion-of-doom",
+    "name": "Potion of Doom",
+    "description": "Apply 33 Doom.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "potion-shaped rock": {
+    "slug": "potion-shaped-rock",
+    "name": "Potion-Shaped Rock",
+    "description": "Deal 15 damage.",
+    "rarity": "Token",
+    "usage": "CombatOnly"
+  },
+  "powdered demise": {
+    "slug": "powdered-demise",
+    "name": "Powdered Demise",
+    "description": "Enemy loses 9 HP at the end of each of its turns.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "power potion": {
+    "slug": "power-potion",
+    "name": "Power Potion",
+    "description": "Choose 1 of 3 random Power cards to add into your Hand. It's free to play this turn.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "radiant tincture": {
+    "slug": "radiant-tincture",
+    "name": "Radiant Tincture",
+    "description": "Gain . Gain an additional  at the start of your next 3 turns.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "regen potion": {
+    "slug": "regen-potion",
+    "name": "Regen Potion",
+    "description": "Gain 5 Regen.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "shackling potion": {
+    "slug": "shackling-potion",
+    "name": "Shackling Potion",
+    "description": "ALL enemies lose 7 Strength this turn.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "ship in a bottle": {
+    "slug": "ship-in-a-bottle",
+    "name": "Ship in a Bottle",
+    "description": "Gain 10 Block. Next turn, gain 10 Block.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "skill potion": {
+    "slug": "skill-potion",
+    "name": "Skill Potion",
+    "description": "Choose 1 of 3 random Skill cards to add into your Hand. It's free to play this turn.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "snecko oil": {
+    "slug": "snecko-oil",
+    "name": "Snecko Oil",
+    "description": "Draw 7 cards. Randomize the cost of cards in your Hand this turn.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "soldier's stew": {
+    "slug": "soldiers-stew",
+    "name": "Soldier's Stew",
+    "description": "All cards containing Strike gain 1 Replay this combat.",
+    "rarity": "Rare",
+    "usage": "CombatOnly"
+  },
+  "speed potion": {
+    "slug": "speed-potion",
+    "name": "Speed Potion",
+    "description": "Gain 5 Dexterity. At the end of your turn, lose 5 Dexterity.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "stable serum": {
+    "slug": "stable-serum",
+    "name": "Stable Serum",
+    "description": "Retain your Hand for 2 turns.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "star potion": {
+    "slug": "star-potion",
+    "name": "Star Potion",
+    "description": "Gain .",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "strength potion": {
+    "slug": "strength-potion",
+    "name": "Strength Potion",
+    "description": "Gain 2 Strength.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "swift potion": {
+    "slug": "swift-potion",
+    "name": "Swift Potion",
+    "description": "Draw 3 cards.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "touch of insanity": {
+    "slug": "touch-of-insanity",
+    "name": "Touch of Insanity",
+    "description": "Choose a card in your Hand. It is free to play this combat.",
+    "rarity": "Uncommon",
+    "usage": "CombatOnly"
+  },
+  "vulnerable potion": {
+    "slug": "vulnerable-potion",
+    "name": "Vulnerable Potion",
+    "description": "Apply 3 Vulnerable.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  },
+  "weak potion": {
+    "slug": "weak-potion",
+    "name": "Weak Potion",
+    "description": "Apply 3 Weak.",
+    "rarity": "Common",
+    "usage": "CombatOnly"
+  }
+}
