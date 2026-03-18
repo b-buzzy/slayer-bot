@@ -7,15 +7,12 @@ function formatCard(result) {
     return `❓ Couldn't find a card called "${result.name}". Check spelling or try the full name.`;
   }
 
-  let text = `*${result.name}* (${result.character}) — ${result.cardType}, ${result.energyCost} Energy, ${result.rarity}`;
-  text += `\n${result.description}`;
+  let text = `<${result.url}|*${result.name}* (${result.character}) — ${result.cardType}, ${result.energyCost} Energy, ${result.rarity}>`;
+  text += `\n${result.description.replace(/\n/g, " ")}`;
 
   if (result.descriptionUpgraded && result.descriptionUpgraded !== result.description) {
-    text += `\n_Upgraded: ${result.descriptionUpgraded}_`;
+    text += `\n_Upgraded: ${result.descriptionUpgraded.replace(/\n/g, " ")}_`;
   }
-
-  // URL kept here but unfurling is disabled; re-enable unfurl_links to get previews back
-  text += `\n<${result.url}|View on slaythespire2.gg>`;
 
   return text;
 }
