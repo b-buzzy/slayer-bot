@@ -1,7 +1,7 @@
 const { closest, distance } = require("fastest-levenshtein");
-const slugs = require("../data/slugs.json");
+const cards = require("../data/cards.json");
 
-const cardNames = Object.keys(slugs);
+const cardNames = Object.keys(cards);
 const BASE_URL = "https://slaythespire2.gg/cards";
 
 // Max levenshtein distance to consider a fuzzy match (scales with input length)
@@ -14,20 +14,36 @@ function maxDistance(input) {
 function lookupCard(input) {
   const normalized = input.trim().toLowerCase();
 
+  let card;
+
   // Exact match
-  if (slugs[normalized]) {
-    return { found: true, url: `${BASE_URL}/${slugs[normalized]}`, name: input };
+  if (cards[normalized]) {
+    card = cards[normalized];
+  } else {
+    // Fuzzy match
+    const best = closest(normalized, cardNames);
+    const dist = distance(normalized, best);
+
+    if (dist <= maxDistance(normalized)) {
+      card = cards[best];
+    }
   }
 
-  // Fuzzy match
-  const best = closest(normalized, cardNames);
-  const dist = distance(normalized, best);
-
-  if (dist <= maxDistance(normalized)) {
-    return { found: true, url: `${BASE_URL}/${slugs[best]}`, name: best };
+  if (!card) {
+    return { found: false, name: input };
   }
 
-  return { found: false, name: input };
+  return {
+    found: true,
+    name: card.name,
+    character: card.character,
+    cardType: card.cardType,
+    rarity: card.rarity,
+    energyCost: card.energyCost,
+    description: card.description,
+    descriptionUpgraded: card.descriptionUpgraded,
+    url: `${BASE_URL}/${card.slug}`,
+  };
 }
 
 module.exports = { lookupCard };
