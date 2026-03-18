@@ -6,7 +6,7 @@ A Slack bot for looking up [Slay the Spire 2](https://www.megacrit.com/) cards. 
 
 - **Bracket syntax** — mention cards with `[[Defend]]`, `[[Eruption]]`, etc.
 - **Fuzzy matching** — handles typos and partial names using Levenshtein distance
-- **Multiple cards** — `[[Defend]] and `[[Strike]]` in one message returns both
+- **Multiple cards** — `[[Defend]]` and `[[Strike]]` in one message returns both
 - **Threaded replies** — responds in-thread in channels, inline in DMs
 - **Rich previews** — Slack unfurls the slaythespire2.gg links automatically
 

@@ -1,8 +1,37 @@
 const { closest, distance } = require("fastest-levenshtein");
-const cards = require("../data/cards.json");
 
-const cardNames = Object.keys(cards);
-const BASE_URL = "https://slaythespire2.gg/cards";
+// Load all data files
+const cards = require("../data/cards.json");
+const enchantments = require("../data/enchantments.json");
+const enemies = require("../data/enemies.json");
+const events = require("../data/events.json");
+const potions = require("../data/potions.json");
+const relics = require("../data/relics.json");
+
+// Define data sources with their base URLs
+const dataSources = [
+  { data: cards, baseUrl: "https://slaythespire2.gg/cards", type: "card" },
+  { data: enchantments, baseUrl: "https://slaythespire2.gg/enchantments", type: "enchantment" },
+  { data: enemies, baseUrl: "https://slaythespire2.gg/enemies", type: "enemy" },
+  { data: events, baseUrl: "https://slaythespire2.gg/events", type: "event" },
+  { data: potions, baseUrl: "https://slaythespire2.gg/potions", type: "potion" },
+  { data: relics, baseUrl: "https://slaythespire2.gg/relics", type: "relic" },
+];
+
+// Build a combined index of all items
+const allItems = [];
+for (const source of dataSources) {
+  for (const key of Object.keys(source.data)) {
+    allItems.push({
+      key,
+      item: source.data[key],
+      baseUrl: source.baseUrl,
+      type: source.type,
+    });
+  }
+}
+
+const allKeys = allItems.map((entry) => entry.key);
 
 // Max levenshtein distance to consider a fuzzy match (scales with input length)
 function maxDistance(input) {
@@ -11,39 +40,42 @@ function maxDistance(input) {
   return 3;
 }
 
-function lookupCard(input) {
+function lookup(input) {
   const normalized = input.trim().toLowerCase();
 
-  let card;
+  let match;
 
   // Exact match
-  if (cards[normalized]) {
-    card = cards[normalized];
-  } else {
+  match = allItems.find((entry) => entry.key === normalized);
+
+  if (!match) {
     // Fuzzy match
-    const best = closest(normalized, cardNames);
+    const best = closest(normalized, allKeys);
     const dist = distance(normalized, best);
 
     if (dist <= maxDistance(normalized)) {
-      card = cards[best];
+      match = allItems.find((entry) => entry.key === best);
     }
   }
 
-  if (!card) {
+  if (!match) {
     return { found: false, name: input };
   }
 
+  const { item, baseUrl, type } = match;
+
   return {
     found: true,
-    name: card.name,
-    character: card.character,
-    cardType: card.cardType,
-    rarity: card.rarity,
-    energyCost: card.energyCost,
-    description: card.description,
-    descriptionUpgraded: card.descriptionUpgraded,
-    url: `${BASE_URL}/${card.slug}`,
+    type,
+    name: item.name,
+    url: `${baseUrl}/${item.slug}`,
+    ...item,
   };
 }
 
-module.exports = { lookupCard };
+// Keep lookupCard for backwards compatibility
+function lookupCard(input) {
+  return lookup(input);
+}
+
+module.exports = { lookup, lookupCard };
