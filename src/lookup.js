@@ -1,80 +1,206 @@
-const { closest, distance } = require("fastest-levenshtein");
+const API_BASE = "https://spire-codex.com/api";
 
-// Load all data files
-const cards = require("../data/cards.json");
-const enchantments = require("../data/enchantments.json");
-const enemies = require("../data/enemies.json");
-const events = require("../data/events.json");
-const potions = require("../data/potions.json");
-const relics = require("../data/relics.json");
-
-// Define data sources with their base URLs
-const dataSources = [
-  { data: cards, baseUrl: "https://slaythespire2.gg/cards", type: "card" },
-  { data: enchantments, baseUrl: "https://slaythespire2.gg/enchantments", type: "enchantment" },
-  { data: enemies, baseUrl: "https://slaythespire2.gg/enemies", type: "enemy" },
-  { data: events, baseUrl: "https://slaythespire2.gg/events", type: "event" },
-  { data: potions, baseUrl: "https://slaythespire2.gg/potions", type: "potion" },
-  { data: relics, baseUrl: "https://slaythespire2.gg/relics", type: "relic" },
+const ENDPOINTS = [
+  { path: "/cards", type: "card" },
+  { path: "/relics", type: "relic" },
+  { path: "/potions", type: "potion" },
+  { path: "/monsters", type: "enemy" },
+  { path: "/events", type: "event" },
+  { path: "/enchantments", type: "enchantment" },
 ];
 
-// Build a combined index of all items
-const allItems = [];
-for (const source of dataSources) {
-  for (const key of Object.keys(source.data)) {
-    allItems.push({
-      key,
-      item: source.data[key],
-      baseUrl: source.baseUrl,
-      type: source.type,
-    });
-  }
+const COLOR_TO_CHARACTER = {
+  ironclad: "Ironclad",
+  silent: "Silent",
+  defect: "Defect",
+  watcher: "Watcher",
+  necrobinder: "Necrobinder",
+  regent: "The Regent",
+  colorless: "Colorless",
+};
+
+/**
+ * Strip BBCode-style tags from spire-codex descriptions
+ */
+function cleanDescription(text) {
+  if (!text) return "";
+  return text.replace(/\[[^\]]*\]/g, "");
 }
 
-const allKeys = allItems.map((entry) => entry.key);
+/**
+ * Format a card result from the spire-codex API
+ */
+function formatCardResult(item) {
+  const character = COLOR_TO_CHARACTER[item.color] || item.color || "";
+  const energyCost =
+    item.is_x_cost ? "X" : item.cost != null ? String(item.cost) : "";
 
-// Max levenshtein distance to consider a fuzzy match (scales with input length)
-function maxDistance(input) {
-  if (input.length <= 3) return 1;
-  if (input.length <= 6) return 2;
-  return 3;
-}
-
-function lookup(input) {
-  const normalized = input.trim().toLowerCase();
-
-  let match;
-
-  // Exact match
-  match = allItems.find((entry) => entry.key === normalized);
-
-  if (!match) {
-    // Fuzzy match
-    const best = closest(normalized, allKeys);
-    const dist = distance(normalized, best);
-
-    if (dist <= maxDistance(normalized)) {
-      match = allItems.find((entry) => entry.key === best);
+  let descriptionUpgraded = "";
+  if (item.upgrade && item.description_raw && item.vars) {
+    // Build upgraded vars by applying diffs
+    // Upgrade keys like "vulnerable" should apply to all matching vars
+    // e.g., "vulnerable": "+1" applies to both "Vulnerable" and "VulnerablePower"
+    const upgradedVars = { ...item.vars };
+    for (const [key, val] of Object.entries(item.upgrade)) {
+      if (typeof val !== "string" || !(val.startsWith("+") || val.startsWith("-"))) {
+        continue;
+      }
+      const diff = parseInt(val);
+      const keyLower = key.toLowerCase();
+      for (const varKey of Object.keys(upgradedVars)) {
+        if (varKey.toLowerCase().startsWith(keyLower)) {
+          upgradedVars[varKey] = upgradedVars[varKey] + diff;
+        }
+      }
     }
-  }
 
-  if (!match) {
-    return { found: false, name: input };
-  }
+    // Render the template with upgraded vars
+    let rendered = item.description_raw;
+    for (const [key, val] of Object.entries(upgradedVars)) {
+      // Replace {Key:diff()} or {Key} patterns
+      const pattern = new RegExp(
+        `\\{${key}(?::diff\\(\\))?\\}`,
+        "gi"
+      );
+      rendered = rendered.replace(pattern, String(val));
+    }
 
-  const { item, baseUrl, type } = match;
+    // Handle special upgrade flags
+    if (item.upgrade.add_innate) {
+      rendered = "Innate.\n" + rendered;
+    }
+    if (item.upgrade.add_retain) {
+      rendered = "Retain.\n" + rendered;
+    }
+
+    descriptionUpgraded = cleanDescription(rendered);
+  }
 
   return {
     found: true,
-    type,
+    type: "card",
     name: item.name,
-    url: `${baseUrl}/${item.slug}`,
-    ...item,
+    character,
+    cardType: item.type || "",
+    energyCost,
+    rarity: item.rarity || "",
+    description: cleanDescription(item.description),
+    descriptionUpgraded,
   };
 }
 
+/**
+ * Format a relic result from the spire-codex API
+ */
+function formatRelicResult(item) {
+  return {
+    found: true,
+    type: "relic",
+    name: item.name,
+    rarity: item.rarity || "",
+    pool: item.pool || "",
+    description: cleanDescription(item.description),
+  };
+}
+
+/**
+ * Format a potion result from the spire-codex API
+ */
+function formatPotionResult(item) {
+  return {
+    found: true,
+    type: "potion",
+    name: item.name,
+    rarity: item.rarity || "",
+    description: cleanDescription(item.description),
+  };
+}
+
+/**
+ * Format a monster result from the spire-codex API
+ */
+function formatMonsterResult(item) {
+  return {
+    found: true,
+    type: "enemy",
+    name: item.name,
+    description: item.description ? cleanDescription(item.description) : "",
+    hp: item.hp_min && item.hp_max ? `${item.hp_min} - ${item.hp_max}` : "",
+  };
+}
+
+/**
+ * Format an event result from the spire-codex API
+ */
+function formatEventResult(item) {
+  return {
+    found: true,
+    type: "event",
+    name: item.name,
+    description: cleanDescription(item.description),
+  };
+}
+
+/**
+ * Format an enchantment result from the spire-codex API
+ */
+function formatEnchantmentResult(item) {
+  return {
+    found: true,
+    type: "enchantment",
+    name: item.name,
+    description: cleanDescription(item.description),
+  };
+}
+
+const FORMATTERS = {
+  card: formatCardResult,
+  relic: formatRelicResult,
+  potion: formatPotionResult,
+  enemy: formatMonsterResult,
+  event: formatEventResult,
+  enchantment: formatEnchantmentResult,
+};
+
+/**
+ * Search all spire-codex endpoints in parallel for a given query.
+ * Returns the first exact name match, or the first result found.
+ */
+async function lookup(input) {
+  const query = input.trim();
+  const encoded = encodeURIComponent(query);
+
+  const results = await Promise.all(
+    ENDPOINTS.map(async ({ path, type }) => {
+      try {
+        const res = await fetch(`${API_BASE}${path}?search=${encoded}`);
+        if (!res.ok) return [];
+        const data = await res.json();
+        return data.map((item) => ({ item, type }));
+      } catch {
+        return [];
+      }
+    })
+  );
+
+  const allResults = results.flat();
+  if (allResults.length === 0) {
+    return { found: false, name: input };
+  }
+
+  // Prefer exact name match (case-insensitive)
+  const normalized = query.toLowerCase();
+  const exact = allResults.find(
+    (r) => r.item.name.toLowerCase() === normalized
+  );
+  const { item, type } = exact || allResults[0];
+
+  const formatter = FORMATTERS[type];
+  return formatter(item);
+}
+
 // Keep lookupCard for backwards compatibility
-function lookupCard(input) {
+async function lookupCard(input) {
   return lookup(input);
 }
 

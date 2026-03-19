@@ -1,14 +1,16 @@
 # slayer-bot
 
-A Slack bot for looking up [Slay the Spire 2](https://www.megacrit.com/) cards. Type `[[Card Name]]` in any message and the bot replies with a link to [slaythespire2.gg](https://slaythespire2.gg) that Slack automatically unfurls into a rich card preview.
+A Slack bot for looking up [Slay the Spire 2](https://www.megacrit.com/) game data. Type `[[Name]]` in any message and the bot replies with info about matching cards, relics, potions, enemies, events, or enchantments.
+
+Game data is sourced live from the [Spire Codex](https://spire-codex.com) API — no local data files to maintain, and results stay up to date as the game is patched.
 
 ## Features
 
-- **Bracket syntax** — mention cards with `[[Defend]]`, `[[Eruption]]`, etc.
-- **Fuzzy matching** — handles typos and partial names using Levenshtein distance
-- **Multiple cards** — `[[Defend]]` and `[[Strike]]` in one message returns both
+- **Bracket syntax** — look up anything with `[[Bash]]`, `[[Akabeko]]`, `[[Fire Potion]]`, etc.
+- **All item types** — cards, relics, potions, enemies, events, and enchantments
+- **Upgraded descriptions** — shows upgraded card text when it differs from the base version
+- **Multiple lookups** — `[[Bash]]` and `[[Burning Blood]]` in one message returns both
 - **Threaded replies** — responds in-thread in channels, inline in DMs
-- **Rich previews** — Slack unfurls the slaythespire2.gg links automatically
 
 ## Setup
 
@@ -20,13 +22,11 @@ A Slack bot for looking up [Slay the Spire 2](https://www.megacrit.com/) cards. 
 ### Slack App Configuration
 
 1. Enable **Socket Mode** and generate an app-level token with `connections:write` scope
-2. Add bot token scopes: `channels:history`, `groups:history`, `chat:write`
-3. Subscribe to events: `message.channels`, `message.groups`
+2. Add bot token scopes: `channels:history`, `groups:history`, `chat:write`, `im:history`
+3. Subscribe to events: `message.channels`, `message.groups`, `message.im`
 4. Install the app to your workspace
 
 ### Environment Variables
-
-The app requires two environment variables:
 
 - `SLACK_BOT_TOKEN` — Bot User OAuth Token (`xoxb-...`)
 - `SLACK_APP_TOKEN` — App-Level Token with `connections:write` scope (`xapp-...`)
@@ -36,61 +36,39 @@ These are configured as variables in [Railway](https://railway.app), which auto-
 ### Local Development
 
 ```bash
-git clone https://github.com/basyl/slayer-bot.git
+git clone https://github.com/b-buzzy/slayer-bot.git
 cd slayer-bot
 npm install
 ```
 
-For local runs, create a `.env` file with the variables above and run `npm start`.
-
-## Updating Game Data
-
-Game data is stored in the `data/` directory. To refresh all data after a game patch:
-
-```bash
-npm run scrape:all
-```
-
-Or run individual scrapers:
-
-| Command | Description |
-|---------|-------------|
-| `npm run scrape:cards` | Scrape card data from slaythespire2.gg/cards |
-| `npm run scrape:enchantments` | Scrape enchantment data |
-| `npm run scrape:enemies` | Scrape enemy data |
-| `npm run scrape:events` | Scrape event data |
-| `npm run scrape:potions` | Scrape potion data |
-| `npm run scrape:relics` | Scrape relic data |
-| `npm run scrape:slugs` | Scrape URL slug mappings |
+Create a `.env` file with the variables above and run `npm start`.
 
 ## Project Structure
 
 ```
 src/
-  index.js           # App entry point, Bolt + Socket Mode setup
-  listener.js        # Message handler, [[bracket]] regex detection
-  lookup.js          # Card name → URL resolution with fuzzy matching
-data/
-  cards.json         # Card data
-  enchantments.json  # Enchantment data
-  enemies.json       # Enemy data
-  events.json        # Event data
-  potions.json       # Potion data
-  relics.json        # Relic data
-  slugs.json         # Card name → URL slug mapping
+  index.js       # App entry point, Bolt + Socket Mode setup
+  listener.js    # Message handler, [[bracket]] detection and response formatting
+  lookup.js      # Live lookups against the Spire Codex API
 scripts/
-  scrape-cards.js        # Scraper for cards
-  scrape-enchantments.js # Scraper for enchantments
-  scrape-enemies.js      # Scraper for enemies
-  scrape-events.js       # Scraper for events
-  scrape-potions.js      # Scraper for potions
-  scrape-relics.js       # Scraper for relics
-  scrape-slugs.js        # Scraper for URL slugs
+  test-lookup.js # Quick test script for verifying API lookups
 ```
+
+## Data Source
+
+All game data comes from the [Spire Codex API](https://spire-codex.com/docs) (60 requests/min, no auth required). Lookups search across six endpoints in parallel:
+
+| Type | Endpoint |
+|------|----------|
+| Cards | `/api/cards?search=` |
+| Relics | `/api/relics?search=` |
+| Potions | `/api/potions?search=` |
+| Enemies | `/api/monsters?search=` |
+| Events | `/api/events?search=` |
+| Enchantments | `/api/enchantments?search=` |
 
 ## Tech Stack
 
 - [Slack Bolt](https://slack.dev/bolt-js) — Slack app framework
-- [fastest-levenshtein](https://github.com/ka-weihe/fastest-levenshtein) — fuzzy string matching
-- [Cheerio](https://cheerio.js.org/) — HTML parsing for the scraper
+- [Spire Codex](https://spire-codex.com) — Slay the Spire 2 game data API
 - [Railway](https://railway.app) — hosting and auto-deployment
