@@ -25,7 +25,9 @@ const COLOR_TO_CHARACTER = {
  */
 function cleanDescription(text) {
   if (!text) return "";
-  return text.replace(/\[[^\]]*\]/g, "");
+  return text
+    .replace(/\[energy:(\d+)\]/g, (_, n) => `${n} Energy`)
+    .replace(/\[[^\]]*\]/g, "");
 }
 
 /**
@@ -58,12 +60,17 @@ function formatCardResult(item) {
     // Render the template with upgraded vars
     let rendered = item.description_raw;
     for (const [key, val] of Object.entries(upgradedVars)) {
-      // Replace {Key:diff()} or {Key} patterns
+      // Replace {Key}, {Key:diff()}, {Key:energyIcons()}, etc.
       const pattern = new RegExp(
-        `\\{${key}(?::diff\\(\\))?\\}`,
+        `\\{${key}(?::\\w+\\(\\w*\\))?\\}`,
         "gi"
       );
-      rendered = rendered.replace(pattern, String(val));
+      rendered = rendered.replace(pattern, (match) => {
+        if (match.toLowerCase().includes("energyicons")) {
+          return `[energy:${val}]`;
+        }
+        return String(val);
+      });
     }
 
     // Handle special upgrade flags
