@@ -2,6 +2,11 @@ const { lookupCard } = require("./lookup");
 
 const CARD_PATTERN = /\[\[([^\]]+)\]\]/g;
 
+function cleanDescription(text) {
+  if (!text) return "";
+  return text.replace(/\[[^\]]*\]/g, "");
+}
+
 function formatResult(result) {
   if (!result.found) {
     return `❓ Couldn't find anything called "${result.name}". Check spelling or try the full name.`;
@@ -9,7 +14,7 @@ function formatResult(result) {
 
   switch (result.type) {
     case "card": {
-      let text = `*${result.name}* (${result.character}) — ${result.cardType}, ${result.energyCost} Energy, ${result.rarity}`;
+      let text = `<${result.url}|*${result.name}* (${result.character}) — ${result.cardType}, ${result.energyCost} Energy, ${result.rarity}>`;
       text += `\n${result.description.replace(/\n/g, " ")}`;
       if (
         result.descriptionUpgraded &&
@@ -20,35 +25,35 @@ function formatResult(result) {
       return text;
     }
     case "relic": {
-      let text = `*${result.name}* — Relic, ${result.rarity}`;
-      if (result.pool) text += ` (${result.pool})`;
+      const pool = result.pool ? ` (${result.pool})` : "";
+      let text = `<${result.url}|*${result.name}* — Relic, ${result.rarity}${pool}>`;
       text += `\n${result.description.replace(/\n/g, " ")}`;
       return text;
     }
     case "potion": {
-      let text = `*${result.name}* — Potion, ${result.rarity}`;
+      let text = `<${result.url}|*${result.name}* — Potion, ${result.rarity}>`;
       text += `\n${result.description.replace(/\n/g, " ")}`;
       return text;
     }
     case "enemy": {
-      let text = `*${result.name}* — Enemy`;
-      if (result.hp) text += `, HP: ${result.hp}`;
+      const hp = result.hp ? `, HP: ${result.hp}` : "";
+      let text = `<${result.url}|*${result.name}* — Enemy${hp}>`;
       if (result.description) {
         text += `\n${result.description.replace(/\n/g, " ")}`;
       }
       return text;
     }
     case "event": {
-      let text = `*${result.name}* — Event`;
-      if (result.description) {
-        // Truncate long event descriptions
-        const desc = result.description.replace(/\n/g, " ").replace(/\\ /g, " ");
-        text += `\n${desc.length > 200 ? desc.slice(0, 200) + "…" : desc}`;
+      let text = `<${result.url}|*${result.name}* — Event>`;
+      if (result.options && result.options.length > 0) {
+        for (const opt of result.options) {
+          text += `\n• *${opt.title}*: ${cleanDescription(opt.description)}`;
+        }
       }
       return text;
     }
     case "enchantment": {
-      let text = `*${result.name}* — Enchantment`;
+      let text = `<${result.url}|*${result.name}* — Enchantment>`;
       text += `\n${result.description.replace(/\n/g, " ")}`;
       return text;
     }

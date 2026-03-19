@@ -1,4 +1,5 @@
 const API_BASE = "https://spire-codex.com/api";
+const SITE_BASE = "https://spire-codex.com";
 
 const ENDPOINTS = [
   { path: "/cards", type: "card" },
@@ -138,6 +139,7 @@ function formatEventResult(item) {
     type: "event",
     name: item.name,
     description: cleanDescription(item.description),
+    options: item.options || [],
   };
 }
 
@@ -176,7 +178,7 @@ async function lookup(input) {
         const res = await fetch(`${API_BASE}${path}?search=${encoded}`);
         if (!res.ok) return [];
         const data = await res.json();
-        return data.map((item) => ({ item, type }));
+        return data.map((item) => ({ item, type, path }));
       } catch {
         return [];
       }
@@ -193,10 +195,11 @@ async function lookup(input) {
   const exact = allResults.find(
     (r) => r.item.name.toLowerCase() === normalized
   );
-  const { item, type } = exact || allResults[0];
+  const match = exact || allResults[0];
+  const url = `${SITE_BASE}${match.path}/${match.item.id.toLowerCase()}`;
 
-  const formatter = FORMATTERS[type];
-  return formatter(item);
+  const formatter = FORMATTERS[match.type];
+  return { ...formatter(match.item), url };
 }
 
 // Keep lookupCard for backwards compatibility
