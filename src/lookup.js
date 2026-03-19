@@ -28,7 +28,7 @@ const COLOR_TO_ENERGY_EMOJI = {
   regent: "\uD83D\uDFE0",     // 🟠
 };
 const STAR_EMOJI = "\u2B50\uFE0F"; // ⭐️
-const DEFAULT_ENERGY_EMOJI = "\uD83D\uDD34"; // 🔴
+const DEFAULT_ENERGY_EMOJI = "\u26AA\uFE0F"; // ⚪️
 
 /**
  * Strip BBCode-style tags and convert energy/star icons to emojis
