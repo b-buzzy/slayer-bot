@@ -20,13 +20,25 @@ const COLOR_TO_CHARACTER = {
   colorless: "Colorless",
 };
 
+const COLOR_TO_ENERGY_EMOJI = {
+  ironclad: "\uD83D\uDD34",   // 🔴
+  silent: "\uD83D\uDFE2",     // 🟢
+  defect: "\uD83D\uDD35",     // 🔵
+  necrobinder: "\uD83D\uDFE3", // 🟣
+  regent: "\uD83D\uDFE0",     // 🟠
+};
+const STAR_EMOJI = "\u2B50\uFE0F"; // ⭐️
+const DEFAULT_ENERGY_EMOJI = "\uD83D\uDD34"; // 🔴
+
 /**
- * Strip BBCode-style tags from spire-codex descriptions
+ * Strip BBCode-style tags and convert energy/star icons to emojis
  */
-function cleanDescription(text) {
+function cleanDescription(text, color) {
   if (!text) return "";
+  const energyEmoji = COLOR_TO_ENERGY_EMOJI[color] || DEFAULT_ENERGY_EMOJI;
   return text
-    .replace(/\[energy:(\d+)\]/g, (_, n) => `${n} Energy`)
+    .replace(/\[energy:(\d+)\]/g, (_, n) => energyEmoji.repeat(parseInt(n)))
+    .replace(/\[star:(\d+)\]/g, (_, n) => STAR_EMOJI.repeat(parseInt(n)))
     .replace(/\[[^\]]*\]/g, "");
 }
 
@@ -59,19 +71,43 @@ function formatCardResult(item) {
 
     // Render the template with upgraded vars
     let rendered = item.description_raw;
+
+    // Handle {Key:plural:singular|plural} — outputs just the word, not the number
+    rendered = rendered.replace(
+      /\{(\w+):plural:([^|]+)\|([^}]+)\}/gi,
+      (_, key, singular, plural) => {
+        const varKey = Object.keys(upgradedVars).find(
+          (k) => k.toLowerCase() === key.toLowerCase()
+        );
+        const val = varKey != null ? upgradedVars[varKey] : 1;
+        return val === 1 ? singular : plural;
+      }
+    );
+
+    // Handle {Key:energyIcons()} and {Key:starIcons()} with var values
     for (const [key, val] of Object.entries(upgradedVars)) {
-      // Replace {Key}, {Key:diff()}, {Key:energyIcons()}, etc.
+      const energyPattern = new RegExp(`\\{${key}:energyIcons\\(\\)\\}`, "gi");
+      rendered = rendered.replace(energyPattern, `[energy:${val}]`);
+
+      const starPattern = new RegExp(`\\{${key}:starIcons\\(\\)\\}`, "gi");
+      rendered = rendered.replace(starPattern, `[star:${val}]`);
+    }
+
+    // Handle {Key}, {Key:diff()}, {Key:inverseDiff()}, etc.
+    for (const [key, val] of Object.entries(upgradedVars)) {
       const pattern = new RegExp(
-        `\\{${key}(?::\\w+\\(\\w*\\))?\\}`,
+        `\\{${key}(?::(?:inverse)?diff\\(\\))?\\}`,
         "gi"
       );
-      rendered = rendered.replace(pattern, (match) => {
-        if (match.toLowerCase().includes("energyicons")) {
-          return `[energy:${val}]`;
-        }
-        return String(val);
-      });
+      rendered = rendered.replace(pattern, String(val));
     }
+
+    // Handle remaining static references
+    rendered = rendered.replace(
+      /\{\w+:energyIcons\((\d+)\)\}/gi,
+      (_, n) => `[energy:${n}]`
+    );
+    rendered = rendered.replace(/\{singleStarIcon\}/gi, "[star:1]");
 
     // Handle special upgrade flags
     if (item.upgrade.add_innate) {
@@ -81,7 +117,7 @@ function formatCardResult(item) {
       rendered = "Retain.\n" + rendered;
     }
 
-    descriptionUpgraded = cleanDescription(rendered);
+    descriptionUpgraded = cleanDescription(rendered, item.color);
   }
 
   return {
@@ -92,7 +128,7 @@ function formatCardResult(item) {
     cardType: item.type || "",
     energyCost,
     rarity: item.rarity || "",
-    description: cleanDescription(item.description),
+    description: cleanDescription(item.description, item.color),
     descriptionUpgraded,
   };
 }

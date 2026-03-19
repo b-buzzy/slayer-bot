@@ -4,9 +4,7 @@ const CARD_PATTERN = /\[\[([^\]]+)\]\]/g;
 
 function cleanDescription(text) {
   if (!text) return "";
-  return text
-    .replace(/\[energy:(\d+)\]/g, (_, n) => `${n} Energy`)
-    .replace(/\[[^\]]*\]/g, "");
+  return text.replace(/\[[^\]]*\]/g, "");
 }
 
 function formatResult(result) {
